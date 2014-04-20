@@ -16,7 +16,7 @@ class Exception: public Number
 {
 	public:
 		Exception();
-		Exception(Number*num2,  Number* num2, string op);
+		Exception(string value);
 		string add(Number*, Number*);
 		string subtract(Number*, Number*);
 		string multiply(Number*, Number*);
