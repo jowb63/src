@@ -2272,6 +2272,21 @@ Number* Calculate::exponentiate(Number* a, Number* b)
     Number* num = new Rational(1,1);
 	return num;
 }
+
+Number* Calculate::root(Number* x, Number* y)
+{
+	//The following code assumes x and y are ints. This class will need a lot of work in order to be fully functional
+	if(x->getType() == "Rational" && y->getType() == "Rational" && x->isInt() && y->isInt())
+	{
+	Number* result = new nth_root(y->getValueOne(),x->getValueOne());
+	return result;
+	}
+	else
+	{
+		Number* result = new Rational(1,1);
+		return result;
+	}
+}
 //jowb63@bellsouth.net
 
 

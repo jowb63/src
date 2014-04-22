@@ -22,6 +22,7 @@ class Calculate
 		Number* multiply(Number*, Number*);
 		Number* divide(Number*, Number*);
 		Number* exponentiate(Number*, Number*);
+		Number* root(Number*, Number*);
 };
 
 #endif /* CALCULATE_H_ */

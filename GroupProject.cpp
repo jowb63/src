@@ -374,6 +374,17 @@ Number* evaluate(queue<string> output)
 			evaluatedExp.push(result);
 			output.pop();
 		}
+		else if(output.front() == "r")
+		{
+			Number* first = evaluatedExp.top();
+			evaluatedExp.pop();
+			Number* second = evaluatedExp.top();
+			evaluatedExp.pop();
+			//Number* result = second ^ first;
+            Number* result = calculate->root(second, first);
+			evaluatedExp.push(result);
+			output.pop();
+		}
         else
         {
         	//if the string is not an operator, construct a new Number*
@@ -431,7 +442,7 @@ queue<string> shuntingYardAlgorithm(string input, Number* lastAnswer)
 				negative = false;
 			}
 
-			while(currentChar == '0' || currentChar == '1' || currentChar == '2' || currentChar == '3' || currentChar == '4' || currentChar == '5' || currentChar == '6' || currentChar == '7' || currentChar == '8' || currentChar == '9' || currentChar == 'e'|| currentChar == 'i' || currentChar == 'p' || currentChar == 'P' || currentChar == 'l' || currentChar == 'o' || currentChar == 'g' || currentChar == '_' || currentChar == 'r' || currentChar == 't' || currentChar == 'a' || currentChar == 'n' || currentChar == 's')
+			while(currentChar == '0' || currentChar == '1' || currentChar == '2' || currentChar == '3' || currentChar == '4' || currentChar == '5' || currentChar == '6' || currentChar == '7' || currentChar == '8' || currentChar == '9' || currentChar == 'e'|| currentChar == 'i' || currentChar == 'p' || currentChar == 'P' || currentChar == 'l' || currentChar == 'o' || currentChar == 'g' || currentChar == '_' || currentChar == 'a' || currentChar == 'n' || currentChar == 's')
 			{
 				stringCurrentChar << currentChar;
 				if(currentChar == 't')
@@ -513,7 +524,7 @@ queue<string> shuntingYardAlgorithm(string input, Number* lastAnswer)
 				output.push(stringCurrentChar.str());
 			}
 		}
-		else if(currentChar == '+' || currentChar == '-' || currentChar == '*' || currentChar == '/' || currentChar == '^' || currentChar == '(' || currentChar == 'l')
+		else if(currentChar == '+' || currentChar == '-' || currentChar == '*' || currentChar == '/' || currentChar == '^' || currentChar == '(' || currentChar == 'l' || currentChar == 'r')
 		{
 			if(!operators.empty())
 			{
@@ -554,6 +565,15 @@ queue<string> shuntingYardAlgorithm(string input, Number* lastAnswer)
 								i++;
 							}
 						}
+						else if(currentChar == 'r')
+						{
+							stringCurrentChar << currentChar;
+							while(input.at(i+1) == 't' || input.at(i+1) == ':')
+							{
+								currentChar = input.at(i+1);
+								i++;
+							}
+						}
 						else
 						{
 							stringCurrentChar << currentChar;
@@ -574,6 +594,15 @@ queue<string> shuntingYardAlgorithm(string input, Number* lastAnswer)
 								i++;
 							}
 						}
+						else if(currentChar == 'r')
+						{
+							stringCurrentChar << currentChar;
+							while(input.at(i+1) == 't' || input.at(i+1) == ':')
+							{
+								currentChar = input.at(i+1);
+								i++;
+							}
+						}
 						else
 						{
 							stringCurrentChar << currentChar;
@@ -589,6 +618,15 @@ queue<string> shuntingYardAlgorithm(string input, Number* lastAnswer)
 				{
 					stringCurrentChar << currentChar;
 					while(input.at(i+1) == 'o' || input.at(i+1) == 'g' || input.at(i+1) == '_')
+					{
+						currentChar = input.at(i+1);
+						i++;
+					}
+				}
+				else if(currentChar == 'r')
+				{
+					stringCurrentChar << currentChar;
+					while(input.at(i+1) == 't' || input.at(i+1) == ':')
 					{
 						currentChar = input.at(i+1);
 						i++;
