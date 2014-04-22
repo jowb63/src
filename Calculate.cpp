@@ -14,6 +14,7 @@
 #include "RationalMinusPi_or_e.h"
 #include "Pi_or_eMinusRational.h"
 #include "Pi_or_ePowerRational.h"
+#include "Expression.h"
 #include <iostream>
 #include <sstream>
 #include <cmath>
@@ -35,8 +36,6 @@ Calculate::~Calculate()
 
 Number* Calculate::log(Number* base, Number* log)
 {
-
-
     try {
             if ( log->isInt()&& log->getValueOne()<=0){
                 throw std::invalid_argument( "log_b:a a must be greater than 0" );
@@ -204,9 +203,7 @@ Number* Calculate::add(Number* x, Number* y)
         }
         else
         {
-            ostringstream e;
-            e<<x->toString()<<"+"<<y->toString();
-            Number* ans = new Exception(e.str());
+        	Expression* ans = new Expression(x,y,'+');
             return ans;
         }
     }
@@ -436,6 +433,468 @@ Number* Calculate::add(Number* x, Number* y)
         e<<x->toString()<<"+"<<y->toString();
         Number* ans = new Exception(e.str());
         return ans;
+    }
+    //new Expression conditional statements
+
+    //Expression + Rational || Rational + Expression
+    if(x->getType()=="Expression" && y->getType()=="Rational")
+    {
+    	//if first number in expression is rational
+    	if(x->getNum1()->getType() == "Rational")
+    	{
+    		//create Number to store added rational values
+    		Number* ansNum1 = add(x->getNum1(), y);
+    		//create "result" Number which adds new rational value to other number stored in Expression
+    		Number* result = add(x->getNum2(), ansNum1);
+    		return result;
+    	}
+    	if(x->getNum2()->getType() == "Rational")
+    	{
+    		Number* ansNum2 = add(x->getNum2(), y);
+    		Number* result = add(x->getNum1(), ansNum2);
+    		return result;
+    	}
+    	else
+    	{
+    		//if neither number in Expression is a rational, then create a new Expression
+    		Number* result = new Expression(x, y, '+');
+    		return result;
+    	}
+    }
+    if(x->getType()=="Rational" && y->getType()=="Expression")
+    {
+    	if(y->getNum1()->getType() == "Rational")
+    	{
+    		Number* ansNum1 = add(y->getNum1(), x);
+    		Number* result = add(y->getNum2(), ansNum1);
+    		return result;
+    	}
+    	if(y->getNum2()->getType() == "Rational")
+    	{
+    		Number* ansNum2 = add(y->getNum2(), y);
+    		Number* result = add(y->getNum1(), ansNum2);
+    		return result;
+    	}
+    	else
+    	{
+    		Number* result = new Expression(x, y, '+');
+    		return result;
+    	}
+    }
+
+    //Expression + Log || Log + Expression
+    if(x->getType()=="Expression" && y->getType()=="Logarithm")
+    {
+    	//if both numbers are of type "Logarithm"
+    	if(x->getNum1()->getType() == "Logarithm" && x->getNum2()->getType() == "Logarithm")
+    	{
+    		//create two "trial numbers"
+    		Number* try1 = add(x->getNum1(), y);
+    		Number* try2 = add(x->getNum2(), y);
+    		//simplify "trial numbers"
+    		try1->simplify();
+    		try2->simplify();
+
+    		//if either trial succeeds int test, create new expression with new Rational and old Log value
+    		if(try1->isInt())
+    		{
+    			Number* answer = new Expression(try1, x->getNum2(), '+');
+    			return answer;
+    		}
+    		if(try2->isInt())
+    		{
+    			Number* answer = new Expression(try2, x->getNum1(), '+');
+    			return answer;
+    		}
+    		else
+    		{
+    			Number* answer = new Expression(x, y, '+');
+    			return answer;
+    		}
+    	}
+    	if(x->getNum1()->getType() == "Logarithm" && x->getNum2()->getType() != "Logarithm")
+    	{
+    		Number* newLogVal = add(x->getNum1(), y);
+    		Number* answer = new Expression(x->getNum2(), newLogVal, '+');
+    		return answer;
+    	}
+    	if(x->getNum2()->getType() == "Logarithm" && x->getNum1()->getType() != "Logarithm")
+    	{
+    		Number* newLogVal = add(x->getNum2(), y);
+    		Number* answer = new Expression(x->getNum1(), newLogVal, '+');
+    		return answer;
+    	}
+
+    }
+    if(x->getType()=="Logarithm" && y->getType()=="Expression")
+    {
+    	if(y->getNum1()->getType() == "Logarithm" && y->getNum2()->getType() == "Logarithm")
+    	{
+    		//create two "trial numbers"
+    		Number* try1 = add(x, y->getNum1());
+    		Number* try2 = add(x, y->getNum2());
+    		//simplify "trial numbers"
+    		try1->simplify();
+    		try2->simplify();
+
+    		//if either trial succeeds int test, create new expression with new Rational and old Log value
+    		if(try1->isInt())
+    		{
+    			Number* answer = new Expression(try1, y->getNum2(), '+');
+    			return answer;
+    		}
+    		if(try2->isInt())
+    		{
+    			Number* answer = new Expression(try2, y->getNum1(), '+');
+    			return answer;
+    		}
+    		else
+    		{
+    			Number* answer = new Expression(x, y, '+');
+    			return answer;
+    		}
+    	}
+    	if(y->getNum1()->getType() == "Logarithm" && y->getNum2()->getType() != "Logarithm")
+    	{
+    		Number* newLogVal = add(y->getNum1(), x);
+    		Number* answer = new Expression(newLogVal, y->getNum2(), '+');
+    		return answer;
+    	}
+    	if(y->getNum2()->getType() == "Logarithm" && y->getNum1()->getType() != "Logarithm")
+    	{
+    		Number* newLogVal = add(y->getNum2(), x);
+    		Number* answer = new Expression(newLogVal, y->getNum1(), '+');
+    		return answer;
+    	}
+    }
+
+    //Expression + nthRoot || nthRoot + Expression
+    if(x->getType()=="Expression" && y->getType()=="nth_root")
+    {
+    	//if both numbers are of type "nth_root"
+    	if(x->getNum1()->getType() == "nth_root" && x->getNum2()->getType() == "nth_root")
+    	{
+    		//create two "trial numbers"
+    		Number* try1 = add(x->getNum1(), y);
+    		Number* try2 = add(x->getNum2(), y);
+    		//simplify "trial numbers"
+    		try1->simplify();
+    		try2->simplify();
+
+    		//if either trial succeeds int test, create new expression with new Rational and old Log value
+    		if(try1->isInt())
+    		{
+    			Number* answer = new Expression(try1, x->getNum2(), '+');
+    			return answer;
+    		}
+    		if(try2->isInt())
+    		{
+    			Number* answer = new Expression(try2, x->getNum1(), '+');
+    			return answer;
+    		}
+    		else
+    		{
+    			Number* answer = new Expression(x, y, '+');
+    			return answer;
+    		}
+    	}
+    	if(x->getNum1()->getType() == "nth_root" && x->getNum2()->getType() != "nth_root")
+    	{
+    		Number* newLogVal = add(x->getNum1(), y);
+    		Number* answer = new Expression(x->getNum2(), newLogVal, '+');
+    		return answer;
+    	}
+    	if(x->getNum2()->getType() == "nth_root" && x->getNum1()->getType() != "nth_root")
+    	{
+    		Number* newLogVal = add(x->getNum2(), y);
+    		Number* answer = new Expression(x->getNum1(), newLogVal, '+');
+    		return answer;
+    	}
+
+    }
+    if(x->getType()=="nth_root" && y->getType()=="Expression")
+    {
+    	if(y->getNum1()->getType() == "nth_root" && y->getNum2()->getType() == "nth_root")
+    	{
+    		//create two "trial numbers"
+    		Number* try1 = add(x, y->getNum1());
+    		Number* try2 = add(x, y->getNum2());
+    		//simplify "trial numbers"
+    		try1->simplify();
+    		try2->simplify();
+
+    		//if either trial succeeds int test, create new expression with new Rational and old Log value
+    		if(try1->isInt())
+    		{
+    			Number* answer = new Expression(try1, y->getNum2(), '+');
+    			return answer;
+    		}
+    		if(try2->isInt())
+    		{
+    			Number* answer = new Expression(try2, y->getNum1(), '+');
+    			return answer;
+    		}
+    		else
+    		{
+    			Number* answer = new Expression(x, y, '+');
+    			return answer;
+    		}
+    	}
+    	if(y->getNum1()->getType() == "nth_root" && y->getNum2()->getType() != "nth_root")
+    	{
+    		Number* newLogVal = add(y->getNum1(), x);
+    		Number* answer = new Expression(newLogVal, y->getNum2(), '+');
+    		return answer;
+    	}
+    	if(y->getNum2()->getType() == "nth_root" && y->getNum1()->getType() != "nth_root")
+    	{
+    		Number* newLogVal = add(y->getNum2(), x);
+    		Number* answer = new Expression(newLogVal, y->getNum1(), '+');
+    		return answer;
+    	}
+    }
+
+    //Expression + Pi_or_e || Pi_or_e + Expression
+    if(x->getType()=="Expression" && y->getType()=="Pi_or_e")
+    {
+    	//if first number in Expression is of type Pi_or_e
+    	if(x->getNum1()->getType() == "Pi_or_e")
+    	{
+    		Number* ansNum1 = add(x->getNum1(), y);
+    		Number* result = new Expression(ansNum1, x->getNum2(), '+');
+    		return result;
+    	}
+    	//if second number in Expression is of type Pi_or_e
+    	else
+    	{
+    		Number* ansNum2 = add(x->getNum2(), y);
+    		Number* result = new Expression(ansNum2, x->getNum1(), '+');
+    		return result;
+    	}
+    }
+    if(x->getType()=="Pi_or_e" && y->getType()=="Expression")
+    {
+    	//if first number in Expression is of type Pi_or_e
+    	if(y->getNum1()->getType() == "Pi_or_e")
+    	{
+    		Number* ansNum1 = add(y->getNum1(), x);
+    		Number* result = new Expression(ansNum1, y->getNum2(), '+');
+    		return result;
+    	}
+    	//if second number in Expression is of type Pi_or_e
+    	else
+    	{
+    		Number* ansNum2 = add(y->getNum2(), x);
+    		Number* result = new Expression(ansNum2, y->getNum1(), '+');
+    		return result;
+    	}
+    }
+
+    //Expression + Expression
+    if(x->getType()=="Expression" && y->getType()=="Expression")
+    {
+    	//Get parameter values of each expression
+    	Expression* xExpression = dynamic_cast<Expression*>(x);
+    	Expression* yExpression = dynamic_cast<Expression*>(y);
+    	char opExp1 = xExpression->getOperator();
+    	char opExp2 = yExpression->getOperator();
+    	Number* Exp1Num1 = x->getNum1();
+    	Number* Exp1Num2 = x->getNum2();
+    	Number* Exp2Num1 = y->getNum1();
+    	Number* Exp2Num2 = y->getNum2();
+
+    	//return bool values for type equivalencies
+    	bool val_13 = (Exp1Num1->getType() == Exp2Num1->getType());
+    	bool val_14 = (Exp1Num1->getType() == Exp2Num2->getType());
+    	bool val_23 = (Exp1Num2->getType() == Exp2Num1->getType());
+    	bool val_24 = (Exp1Num2->getType() == Exp2Num2->getType());
+
+    	//if both Expression operators are '+'
+    	if(opExp1 == '+' && opExp2 == '+')
+    	{
+    		if(val_13 && val_24)
+    		{
+    			Number* ansNum1 = add(Exp1Num1, Exp2Num1);
+    			Number* ansNum2 = add(Exp1Num2, Exp2Num2);
+    			Number* result = add(ansNum1, ansNum2);
+    			return result;
+    		}
+    		else if(val_14 && val_23)
+    		{
+    			Number* ansNum1 = add(Exp1Num1, Exp2Num2);
+    			Number* ansNum2 = add(Exp1Num2, Exp2Num1);
+    			Number* result = add(ansNum1, ansNum2);
+    			return result;
+    		}
+    		else if(val_13)
+    		{
+    			Number* ansNum1 = add(Exp1Num1, Exp2Num1);
+    			Number* ansNum2 = add(ansNum1, Exp1Num2);
+    			Number* result = add(ansNum2, Exp2Num2);
+    			return result;
+    		}
+    		else if(val_14)
+    		{
+    			Number* ansNum1 = add(Exp1Num1, Exp2Num2);
+    			Number* ansNum2 = add(ansNum1, Exp1Num2);
+    			Number* result = add(ansNum2, Exp2Num1);
+    			return result;
+    		}
+    		else if(val_23)
+    		{
+    			Number* ansNum1 = add(Exp1Num2, Exp2Num1);
+    			Number* ansNum2 = add(ansNum1, Exp1Num1);
+    			Number* result = add(ansNum2, Exp2Num2);
+    			return result;
+    		}
+    		else
+    		{
+    			Number* ansNum1 = add(Exp1Num2, Exp2Num2);
+    			Number* ansNum2 = add(ansNum1, Exp1Num1);
+    			Number* result = add(ansNum2, Exp2Num1);
+    			return result;
+    		}
+    	}
+    	else if(opExp1 == '+' && opExp2 == '-')
+    	{
+    		if(val_13 && val_24)
+    		{
+    			Number* ansNum1 = add(Exp1Num1, Exp2Num1);
+    			Number* ansNum2 = subtract(Exp1Num2, Exp2Num2);
+    			Number* result = add(ansNum1, ansNum2);
+    			return result;
+    		}
+    		else if(val_14 && val_23)
+    		{
+    			Number* ansNum1 = subtract(Exp1Num1, Exp2Num2);
+    			Number* ansNum2 = add(Exp1Num2, Exp2Num1);
+    			Number* result = add(ansNum1, ansNum2);
+    			return result;
+    		}
+    		else if(val_13)
+    		{
+    			Number* ansNum1 = add(Exp1Num1,Exp2Num1);
+    			Number* ansNum2 = add(ansNum1, Exp1Num2);
+    			Number* result = subtract(ansNum2, Exp2Num2);
+    			return result;
+    		}
+    		else if(val_14)
+    		{
+    			Number* ansNum1 = subtract(Exp1Num1, Exp2Num2);
+    			Number* ansNum2 = add(ansNum1, Exp1Num2);
+    			Number* result = add(ansNum2, Exp2Num1);
+    			return result;
+    		}
+    		else if(val_23)
+    		{
+    			Number* ansNum1 = add(Exp1Num2, Exp2Num1);
+    			Number* ansNum2 = add(ansNum1, Exp1Num1);
+    			Number* result = subtract(ansNum2, Exp2Num2);
+    			return result;
+    		}
+    		else
+    		{
+    			Number* ansNum1 = subtract(Exp1Num2, Exp2Num2);
+    			Number* ansNum2 = add(ansNum1, Exp1Num1);
+    			Number* result = add(ansNum2, Exp2Num1);
+    			return result;
+    		}
+    	}
+    	else if(opExp1 == '-' && opExp2 == '+')
+    	{
+    		//create result number calling add method with Expression numbers flipped
+    		//should go to if statement right above
+    		Number* result = add(y, x);
+    		return result;
+    	}
+    	else if(opExp1 == '-' && opExp2 == '-')
+    	{
+    		if(val_13 && val_24)
+    		{
+    			Number* ansNum1 = add(Exp1Num1, Exp2Num1);
+    			Number* ansNum2 = subtract(Exp1Num2, Exp2Num2);
+    			Number* result = subtract(ansNum1, ansNum2);
+    			return result;
+    		}
+    		else if(val_14 && val_23)
+    		{
+    			Number* ansNum1 = subtract(Exp1Num1, Exp2Num2);
+    			Number* ansNum2 = subtract(Exp2Num1, Exp1Num2);
+    			Number* result = add(ansNum1, ansNum2);
+    			return result;
+    		}
+    		else if(val_13)
+    		{
+    			Number* ansNum1 = add(Exp1Num1, Exp2Num1);
+    			Number* ansNum2 = subtract(ansNum1, Exp1Num2);
+    			Number* result = subtract(ansNum2, Exp2Num2);
+    			return result;
+    		}
+    		else if(val_14)
+    		{
+    			Number* ansNum1 = subtract(Exp1Num1, Exp2Num2);
+    			Number* ansNum2 = subtract(ansNum1, Exp1Num2);
+    			Number* result = add(ansNum2, Exp2Num2);
+    			return result;
+    		}
+    		else if(val_23)
+    		{
+    			//make second number negative
+    			Number* nullRational = new Rational(0, 0);
+    			Number* negNum = subtract(nullRational, Exp1Num2);
+
+    			//continue calculation as normal
+    			Number* ansNum1 = add(negNum, Exp2Num1);
+    			Number* ansNum2 = add(ansNum1, Exp1Num1);
+    			Number* result = subtract(ansNum2, Exp2Num2);
+    			return result;
+    		}
+    		else
+    		{
+    			//make second number negative
+    			Number* nullRational = new Rational(0, 0);
+    			Number* negNum = subtract(nullRational, Exp1Num2);
+
+    			//continuing calculation
+    			Number* ansNum1 = subtract(negNum, Exp2Num2);
+    			Number* ansNum2 = add(ansNum1, Exp1Num1);
+    			Number* result = add(ansNum2, Exp2Num1);
+    			return result;
+    		}
+    	}
+    	else if(opExp1 == '/' && opExp2 == '/')
+    	{
+    		/*if(*Exp1Num2 == *Exp2Num2) we haven't overload the == operator for deferenced numbers
+    		{
+    			Number* ansNumerator = add(Exp1Num1, Exp2Num1);
+    			Number* result = new Expression(ansNumerator, Exp1Num2, '/');
+    			return result;
+    		}
+    		else
+    		{*/
+    			Number* result = new Expression(x, y, '+');
+    			return result;
+    		//}
+    	}
+    	else if(opExp1 == '*' && opExp2 == '*')
+    	{
+    		/*if((*Exp1Num1 == *Exp2Num1) && (*Exp1Num2 == *Exp2Num2)) we haven't overload the == operator for deferenced numbers
+    		{
+    			Number* multiplier = new Rational(2,1);
+    			Number* result = multiply(multiplier, x);
+    			return result;
+    		}
+    		else
+    		{*/
+    			Number* result = new Expression(x,y,'+');
+    			return result;
+    		//}
+    	}
+    	else
+    	{
+    		Number* result = new Expression(x, y, '+');
+    		return result;
+    	}
     }
 }
 

@@ -1,47 +1,31 @@
-/*
- * Expression.h
- *
- *  Created on: Apr 17, 2014
- *      Author: Joshua
- */
-
-#ifndef EXPRESSION_H_
-#define EXPRESSION_H_
-
-
-/*
- * Expression.h
- *
- *  Created on: Apr 17, 2014
- *      Author: Joshua
- */
-
-#ifndef Expression_H_
-#define Expression_H_
 #include <iostream>
-#include <sstream>
-#include <stack>
-#include <queue>
 #include <string>
-#include <cmath>
+#include "Number.h"
 using namespace std;
 
 class Expression: public Number
 {
-	public:
-		Expression();
-		Expression(Number* num1, Number* num2, string op);
-		~Expression();
-		string getOperator();
+    public:
+        Expression(Number* num1, Number* num2, char op){
+            this->num1 = num1;
+            this->num2 = num2;
+            this->op = op;
+        }
+        ~Expression(){};
+        string getType();
+        Number* getNum1();
+        Number* getNum2();
+        char getOperator();
+        void simplify();
+        bool isInt();
+        string toString();
+        int getValueOne();
+        int getValueTwo();
+        //Rational add(Rational*, Rational*);
+        //Rational subtract(Rational*, Rational*);
+   private:
+        Number* num1;
+        Number* num2;
+        char op;
 
-	private:
-		Expression* Expression1;
-		Expression* Expression2;
-		string op;
 };
-
-#endif /* Expression_H_ */
-
-
-
-#endif /* EXPRESSION_H_ */

@@ -524,7 +524,7 @@ queue<string> shuntingYardAlgorithm(string input, Number* lastAnswer)
 				output.push(stringCurrentChar.str());
 			}
 		}
-		else if(currentChar == '+' || currentChar == '-' || currentChar == '*' || currentChar == '/' || currentChar == '^' || currentChar == '(' || currentChar == 'l' || currentChar == 'r')
+		else if(currentChar == '+' || currentChar == '-' || currentChar == '*' || currentChar == '/' || currentChar == '^' || currentChar == '(' || currentChar == 'l' || currentChar == 'r' || currentChar == 's')
 		{
 			if(!operators.empty())
 			{
@@ -544,6 +544,27 @@ queue<string> shuntingYardAlgorithm(string input, Number* lastAnswer)
 							currentChar = input.at(i+1);
 							i++;
 						}
+					}
+					else if(currentChar == 'r')
+					{
+						stringCurrentChar << currentChar;
+						while(input.at(i+1) == 't' || input.at(i+1) == ':')
+						{
+							currentChar = input.at(i+1);
+							i++;
+						}
+					}
+					else if(currentChar == 's')
+					{
+						while(input.at(i+1) == 'q' || input.at(i+1) == 'r' || input.at(i+1) == 't' || input.at(i+1) == ':')
+						{
+							currentChar = input.at(i+1);
+							i++;
+						}
+						stringCurrentChar << 'r';
+						ostringstream two;
+						two << 2;
+						output.push(two.str());
 					}
 					else
 					{
@@ -574,6 +595,18 @@ queue<string> shuntingYardAlgorithm(string input, Number* lastAnswer)
 								i++;
 							}
 						}
+						else if(currentChar == 's')
+						{
+							while(input.at(i+1) == 'q' || input.at(i+1) == 'r' || input.at(i+1) == 't' || input.at(i+1) == ':')
+							{
+								currentChar = input.at(i+1);
+								i++;
+							}
+							stringCurrentChar << 'r';
+							ostringstream two;
+							two << 2;
+							output.push(two.str());
+						}
 						else
 						{
 							stringCurrentChar << currentChar;
@@ -603,6 +636,18 @@ queue<string> shuntingYardAlgorithm(string input, Number* lastAnswer)
 								i++;
 							}
 						}
+						else if(currentChar == 's')
+						{
+							while(input.at(i+1) == 'q' || input.at(i+1) == 'r' || input.at(i+1) == 't' || input.at(i+1) == ':')
+							{
+								currentChar = input.at(i+1);
+								i++;
+							}
+							stringCurrentChar << 'r';
+							ostringstream two;
+							two << 2;
+							output.push(two.str());
+						}
 						else
 						{
 							stringCurrentChar << currentChar;
@@ -631,6 +676,18 @@ queue<string> shuntingYardAlgorithm(string input, Number* lastAnswer)
 						currentChar = input.at(i+1);
 						i++;
 					}
+				}
+				else if(currentChar == 's')
+				{
+					while(input.at(i+1) == 'q' || input.at(i+1) == 'r' || input.at(i+1) == 't' || input.at(i+1) == ':')
+					{
+						currentChar = input.at(i+1);
+						i++;
+					}
+					stringCurrentChar << 'r';
+					ostringstream two;
+					two << 2;
+					output.push(two.str());
 				}
 				else
 				{
@@ -871,7 +928,7 @@ int main() {
 			try{
 			for(int i=0; i<input.size(); i++)
 			{
-			if(input.at(i)!= '1' && input.at(i)!='2' && input.at(i)!= '3'&& input.at(i)!='4'&& input.at(i)!='5'&&input.at(i)!='6' &&input.at(i)!='7'&&input.at(i)!='8'&&input.at(i)!='9'&&input.at(i)!='0'&&input.at(i)!='l'&&input.at(i)!='o'&&input.at(i)!='g'&&input.at(i)!='p'&&input.at(i)!='P'&&input.at(i)!='i'&&input.at(i)!='e'&&input.at(i)!='r'&&input.at(i)!='t'&&input.at(i)!=':'&&input.at(i)!='_'&&input.at(i)!='-'&&input.at(i)!='+'&&input.at(i)!='/'&&input.at(i)!='*'&&input.at(i)!='('&&input.at(i)!=')'&&input.at(i)!='a'&&input.at(i)!='n'&&input.at(i)!='s' && input.at(i)!='^')
+			if(input.at(i)!= '1' && input.at(i)!='2' && input.at(i)!= '3'&& input.at(i)!='4'&& input.at(i)!='5'&&input.at(i)!='6' &&input.at(i)!='7'&&input.at(i)!='8'&&input.at(i)!='9'&&input.at(i)!='0'&&input.at(i)!='l'&&input.at(i)!='o'&&input.at(i)!='g'&&input.at(i)!='p'&&input.at(i)!='P'&&input.at(i)!='i'&&input.at(i)!='e'&&input.at(i)!='r'&&input.at(i)!='t'&&input.at(i)!=':'&&input.at(i)!='_'&&input.at(i)!='-'&&input.at(i)!='+'&&input.at(i)!='/'&&input.at(i)!='*'&&input.at(i)!='('&&input.at(i)!=')'&&input.at(i)!='a'&&input.at(i)!='n'&&input.at(i)!='s' && input.at(i)!='^' && input.at(i) != 'q')
 			{
 			ostringstream s;
 			s<<"Character "<<input.at(i)<<" not supported";
