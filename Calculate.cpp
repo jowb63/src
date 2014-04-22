@@ -96,7 +96,7 @@ Number* Calculate::log(Number* base, Number* log)
 		{
 			if(base->isInt() && log->isInt())
 			{
-				Number* num = new Rational(log->getValueOne(), base->getValueOne());
+				Number* num = new Logarithm(base->getValueOne(), log->getValueOne());
 				return num;
 			}
 		}
@@ -203,7 +203,7 @@ Number* Calculate::add(Number* x, Number* y)
         }
         else
         {
-        	Expression* ans = new Expression(x,y,'+');
+        	Number* ans = new Expression(x,y,'+');
             return ans;
         }
     }
@@ -2737,7 +2737,29 @@ Number* Calculate::root(Number* x, Number* y)
 	//The following code assumes x and y are ints. This class will need a lot of work in order to be fully functional
 	if(x->getType() == "Rational" && y->getType() == "Rational" && x->isInt() && y->isInt())
 	{
-	Number* result = new nth_root(y->getValueOne(),x->getValueOne());
+		bool xNegative = false;
+		if(x->getValueOne() < 0)
+		{
+			xNegative = true;
+			x = new Rational(-1*x->getValueOne(), x->getValueTwo());
+		}
+		if(x->getValueTwo() < 0)
+		{
+			xNegative = true;
+			x = new Rational(x->getValueOne(), -1*x->getValueTwo());
+		}
+
+		Number* result;
+		if(xNegative)
+		{
+			Number* resultPartOne = new nth_root(y->getValueOne(),x->getValueOne());
+			Number* one = new Rational(1,1);
+			result = new Expression(one,resultPartOne,'/') ;
+		}
+		else
+		{
+			result = new nth_root(y->getValueOne(),x->getValueOne());
+		}
 	return result;
 	}
 	else

@@ -42,9 +42,13 @@ int getPrecidence (char input)
 	{
 		return 4;
 	}
-	if(input == 'l')
+	else if(input == 'l')
 	{
-		return -2;
+		return 5;
+	}
+	else if(input == 'r')
+	{
+		return 4;
 	}
 	else if(input == '*')
 	{
