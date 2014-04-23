@@ -161,7 +161,7 @@ Number* Calculate::add(Number* x, Number* y)
     {
 	   	//rational and rational
 	    int a, b;
-	    if(x->isInt()== true && y->isInt()==true)
+	    if(x->isInt()== true && y->isInt()==true) //works
 	    {
             a = x->getValueOne()+y->getValueOne();
 	        b = 1;
@@ -173,7 +173,7 @@ Number* Calculate::add(Number* x, Number* y)
 	       	//at least one not int"
 
 
-	        if(x->getValueTwo()==y->getValueTwo())
+	        if(x->getValueTwo()==y->getValueTwo()) //works
 	        {
 	            a = x->getValueOne()+y->getValueOne();
 	            b = x->getValueTwo();
@@ -181,7 +181,7 @@ Number* Calculate::add(Number* x, Number* y)
 
 	            return ans;
             }
-            else
+            else //works
             {
                 b = x->getValueTwo() * y->getValueTwo();
                 a = (x->getValueOne()*y->getValueTwo()) + (y->getValueOne()*x->getValueTwo());
@@ -191,7 +191,7 @@ Number* Calculate::add(Number* x, Number* y)
             }
         }
     }
-    if((x->getType() == "Logarithm" || x->getType()=="nth_root") && (y->getType()=="Logarithm" || y->getType()=="nth_root"))
+    else if((x->getType() == "Logarithm" || x->getType()=="nth_root") && (y->getType()=="Logarithm" || y->getType()=="nth_root")) //works
     {
         int a, b;
         if(x->isInt()==true && y->isInt()==true)
@@ -207,237 +207,70 @@ Number* Calculate::add(Number* x, Number* y)
             return ans;
         }
     }
-    if((x->getType()=="pi" || x->getType()=="Pi") && (y->getType()=="pi" || y->getType()=="Pi"))
+    else if((x->getType()=="pi" || x->getType()=="Pi") && (y->getType()=="pi" || y->getType()=="Pi")) //works
     {
         int a = x->getValueOne()+y->getValueOne();
         string name = "pi";
         Number* ans = new Pi_or_e(a, name);
         return ans;
     }
-    if(x->getType()=="e"&& y->getType()=="e")
+    else if(x->getType()=="e"&& y->getType()=="e") //works
     {
         int a = x->getValueOne()+y->getValueOne();
         string name = "e";
         Number* ans = new Pi_or_e(a, name);
         return ans;
     }
-    if(x->getType()=="e" && (y->getType()=="pi" || y->getType()=="Pi"))
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    if((x->getType()=="pi" || x->getType()=="Pi") && y->getType()=="e")
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    /*if(x->getType()=="Exception" && y->getType()=="Exception")
-    {
-        if(x->toString()==y->toString())
-    }
-    */
-	if(x->getType() == "Rational"  && (y->getType() == "Logarithm"|| y->getType()=="nth_root"))
+    else if(x->getType() == "Rational"  && (y->getType() == "Logarithm"|| y->getType()=="nth_root"))
 	{
 	    int a, b;
-	    if(x->isInt()==true && y->isInt()==true)
+	    if(x->isInt()==true && y->isInt()==true) //works
         {
             a=x->getValueOne() + y->getValueOne();//y->getValueOne() how to find the value for simplified log?;
             b=1;
             Number* ans = new Rational(a, b);
             return ans;
         }
-        else if(x->isInt() == false && y->isInt()==true)
+        else if(x->isInt() == false && y->isInt()==true) //works
         {
             a=(x->getValueOne()*y->getValueTwo())+y->getValueOne();//simplified logarithm as an integers
             b=y->getValueTwo();
             Number* ans = new Rational(a, b);
             return ans;
         }
-        else
+        else //works
         {
-            ostringstream e;
-            e<<x->toString()<<"+"<<y->toString();
-            Number* ans = new Exception(e.str());
+            Number* ans = new Expression(x,y,'+');
             return ans;
         }
 	}
-    if((x->getType() == "Logarithm" || x->getType()=="nth_root") && y->getType() == "Rational")
+    else if((x->getType() == "Logarithm" || x->getType()=="nth_root") && y->getType() == "Rational")
 	{
 	    int a, b;
-	    if(x->isInt()==true && y->isInt()==true)
+	    if(x->isInt()==true && y->isInt()==true) //works
         {
             a=x->getValueOne() + y->getValueOne(); //how to find the value for simplified log?;
             b=1;
             Number* ans = new Rational(a, b);
             return ans;
         }
-        else if(x->isInt() == true && y->isInt()==false)
+        else if(x->isInt() == true && y->isInt()==false) //works
         {
             a=(x->getValueOne()*y->getValueTwo())+y->getValueOne();//simplified logarithm as an integer
             b=y->getValueTwo();
             Number* ans = new Rational(a, b);
             return ans;
         }
-        else
+        else //works
         {
-            ostringstream e;
-            e<<x->toString()<<"+"<<y->toString();
-            Number* ans = new Exception(e.str());
+            Number* ans = new Expression(x,y,'+');
             return ans;
         }
 	}
-	/*if(x->getType()=="Rational" && (y->getType()=="Pi" || y->getType()=="pi"))
-	{
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    if((x->getType()=="Pi" || x->getType()=="pi") && y->getType()=="Rational")
-    {
-    	cout << "gets here" << endl;
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    if(x->getType()=="Rational" && y->getType()=="e")
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    if(x->getType()=="e" && y->getType()=="Rational")
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }*/
-    if(x->getType()=="Rational" && (y->getType()=="Pi" || y->getType()=="pi"))
-        {
-            Number* ratVal = new Rational(x->getValueOne(), x->getValueTwo());
-            Number* e = new RationalPlusPi_or_e(ratVal, y);
-            return e;
-        }
-        if((x->getType()=="Pi" || x->getType()=="pi") && y->getType()=="Rational")
-        {
-            Number* e = new RationalPlusPi_or_e(y, x);
-            return e;
-        }
-        if(x->getType()=="RationalPlusPi_or_e" && y->getType()=="Rational")
-        {
-            //Number* ratVal = new Rational(y->getValueOne(), y->getValueTwo());
-            Number* ans = new RationalPlusPi_or_e(this->add(x->getNum1(), y), x->getNum2());
-            return ans;
-        }
-        if(x->getType()=="Rational" && y->getType()=="RationalPlusPi_or_e")
-        {
-            Number* ans = new RationalPlusPi_or_e(this->add(x, y->getNum1()), y->getNum2());
-            return ans;
-        }
-        if(x->getType()=="Rational" && y->getType()=="e")
-        {
-            Number* ratVal = new Rational(x->getValueOne(), x->getValueTwo());
-            Number* e = new RationalPlusPi_or_e(ratVal, y);
-            return e;
-        }
-        if(x->getType()=="e" && y->getType()=="Rational")
-        {
-            Number* ratVal = new Rational(y->getValueOne(), y->getValueTwo());
-            Number* e = new RationalPlusPi_or_e(ratVal, x);
-            return e;
-        }
-        if(x->getType()=="RationalPlusPi_or_e" && y->getType()=="RationalPlusPi_or_e")
-        {
-            Number* ans = new RationalPlusPi_or_e(this->add(x->getNum1(), y->getNum1()),this->add(x->getNum2(),y->getNum2()));
-            return ans;
-        }
-        if(x->getType()=="e" && y->getType()=="RationalPlusPi_or_e")
-        {
-        Number* ans = new RationalPlusPi_or_e(y->getNum1(), this->add(x,y->getNum2()));
-        return ans;
-        }
-        if(x->getType()=="pi"||x->getType()=="Pi" && y->getType()=="RationalPlusPi_or_e")
-        {
-        Number* ans = new RationalPlusPi_or_e(y->getNum1(), this->add(x,y->getNum2()));
-        return ans;
-        }
-        if(x->getType()=="RationalPlusPi_or_e" && y->getType()=="e")
-        {
-        Number* ans = new RationalPlusPi_or_e(x->getNum1(), this->add(x->getNum2(),y));
-        return ans;
-        }
-        if(x->getType()=="RationalPlusPi_or_e" && y->getType()=="pi" || y->getType()=="Pi")
-        {
-        Number* ans = new RationalPlusPi_or_e(x->getNum1(), this->add(x->getNum2(),y));
-        return ans;
-        }
-    if(x->getType()=="e" && y->getType()=="Logarithm")
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    if(x->getType()=="Logarithm" && y->getType()=="e")
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    if(x->getType()=="Logarithm" && (y->getType()=="pi"|| y->getType()=="Pi"))
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    if((x->getType()=="Pi" || y->getType()=="pi") && y->getType()=="Logarithm")
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    if(x->getType()=="e" && y->getType()=="nth_root")
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    if(x->getType()=="nth_root" && y->getType()=="e")
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    if((x->getType()=="pi" || x->getType()=="pi") && y->getType()=="nth_root")
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
-    if(x->getType()=="nth_root" && (y->getType()=="pi"||y->getType()=="Pi"))
-    {
-        ostringstream e;
-        e<<x->toString()<<"+"<<y->toString();
-        Number* ans = new Exception(e.str());
-        return ans;
-    }
     //new Expression conditional statements
 
     //Expression + Rational || Rational + Expression
-    if(x->getType()=="Expression" && y->getType()=="Rational")
+    else if(x->getType()=="Expression" && y->getType()=="Rational")
     {
     	//if first number in expression is rational
     	if(x->getNum1()->getType() == "Rational")
@@ -461,7 +294,7 @@ Number* Calculate::add(Number* x, Number* y)
     		return result;
     	}
     }
-    if(x->getType()=="Rational" && y->getType()=="Expression")
+    else if(x->getType()=="Rational" && y->getType()=="Expression")
     {
     	if(y->getNum1()->getType() == "Rational")
     	{
@@ -483,7 +316,7 @@ Number* Calculate::add(Number* x, Number* y)
     }
 
     //Expression + Log || Log + Expression
-    if(x->getType()=="Expression" && y->getType()=="Logarithm")
+    else if(x->getType()=="Expression" && y->getType()=="Logarithm")
     {
     	//if both numbers are of type "Logarithm"
     	if(x->getNum1()->getType() == "Logarithm" && x->getNum2()->getType() == "Logarithm")
@@ -526,7 +359,7 @@ Number* Calculate::add(Number* x, Number* y)
     	}
 
     }
-    if(x->getType()=="Logarithm" && y->getType()=="Expression")
+    else if(x->getType()=="Logarithm" && y->getType()=="Expression")
     {
     	if(y->getNum1()->getType() == "Logarithm" && y->getNum2()->getType() == "Logarithm")
     	{
@@ -569,7 +402,7 @@ Number* Calculate::add(Number* x, Number* y)
     }
 
     //Expression + nthRoot || nthRoot + Expression
-    if(x->getType()=="Expression" && y->getType()=="nth_root")
+    else if(x->getType()=="Expression" && y->getType()=="nth_root")
     {
     	//if both numbers are of type "nth_root"
     	if(x->getNum1()->getType() == "nth_root" && x->getNum2()->getType() == "nth_root")
@@ -612,7 +445,7 @@ Number* Calculate::add(Number* x, Number* y)
     	}
 
     }
-    if(x->getType()=="nth_root" && y->getType()=="Expression")
+    else if(x->getType()=="nth_root" && y->getType()=="Expression")
     {
     	if(y->getNum1()->getType() == "nth_root" && y->getNum2()->getType() == "nth_root")
     	{
@@ -655,7 +488,7 @@ Number* Calculate::add(Number* x, Number* y)
     }
 
     //Expression + Pi_or_e || Pi_or_e + Expression
-    if(x->getType()=="Expression" && y->getType()=="Pi_or_e")
+    else if(x->getType()=="Expression" && y->getType()=="Pi_or_e")
     {
     	//if first number in Expression is of type Pi_or_e
     	if(x->getNum1()->getType() == "Pi_or_e")
@@ -672,7 +505,7 @@ Number* Calculate::add(Number* x, Number* y)
     		return result;
     	}
     }
-    if(x->getType()=="Pi_or_e" && y->getType()=="Expression")
+    else if(x->getType()=="Pi_or_e" && y->getType()=="Expression")
     {
     	//if first number in Expression is of type Pi_or_e
     	if(y->getNum1()->getType() == "Pi_or_e")
@@ -691,7 +524,7 @@ Number* Calculate::add(Number* x, Number* y)
     }
 
     //Expression + Expression
-    if(x->getType()=="Expression" && y->getType()=="Expression")
+    else if(x->getType()=="Expression" && y->getType()=="Expression")
     {
     	//Get parameter values of each expression
     	Expression* xExpression = dynamic_cast<Expression*>(x);
@@ -896,15 +729,22 @@ Number* Calculate::add(Number* x, Number* y)
     		return result;
     	}
     }
+    else //works
+    {
+        Number* ans = new Expression(x,y,'+');
+    }
 }
 
 Number* Calculate::subtract(Number* x, Number* y)
 {
+	cout << "x to string: " << x->toString() << endl;
+	cout << "y to string: " << y->toString() << endl;
+
     if(x->getType()=="Rational" && y->getType()=="Rational")
     {
 	   	//rational and rational
 	    int a, b;
-	    if(x->isInt()== true && y->isInt()==true)
+	    if(x->isInt()== true && y->isInt()==true) //works
 	    {
             a = x->getValueOne()-y->getValueOne();
 	        b = 1;
@@ -918,6 +758,7 @@ Number* Calculate::subtract(Number* x, Number* y)
 
 	        if(x->getValueTwo()==y->getValueTwo())
 	        {
+	        	cout << "money" << endl;
 	            a = x->getValueOne()-y->getValueOne();
 	            b = x->getValueTwo();
                 Number* ans = new Rational (a, b);

@@ -21,6 +21,7 @@ Logarithm::Logarithm(int base, int log)
 {
 	this->base = base;
 	this->log = log;
+	this->simplify();
 }
 
 Logarithm::~Logarithm()
@@ -82,7 +83,7 @@ void Logarithm::simplify()
 
 string Logarithm::toString()
 {
-	if(base != 1)
+	if(log != 1)
 	{
 		std::ostringstream oss;
 		oss << "log_" << base << ":" << log;
@@ -91,7 +92,7 @@ string Logarithm::toString()
 	else
 	{
 		std::ostringstream oss;
-		oss << log;
+		oss << base;
 		return oss.str();
 	}
 
